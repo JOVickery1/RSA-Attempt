@@ -39,7 +39,7 @@ def get_e(phi):
     while not coprime:
         e = secrets.randbelow(phi-1)+1
         # print(f'e = {e}')
-        if is_prime(e) and get_gcd(e,phi) == 1:
+        if is_prime(e) and np.gcd(e,phi) == 1 and not e*e%phi==1:
             coprime = True
     
     return e
@@ -49,13 +49,22 @@ def get_d(e, phi):
     inputs: e - an integer; phi - an integer
     returns: d - an integer that is e^(-1) mod phi
     """
-    for d in range(phi):
-        if (d*e)%phi == 1:
-            return d
+    inverse_flag = False
+    while not inverse_flag:
+        d = secrets.randbelow(phi-1+1)
+        if (d*e%phi == 1):
+            inverse_flag = True
+
+    return d
+    # for d in range(phi):
+    #     if (d*e)%phi == 1:
+    #         return d
 
 
 p = 13
 q = 11
+# p = 8243
+# q = 44449
 n = p*q
 print("n: ", n)
 phi = (p-1)*(q-1)
@@ -66,11 +75,11 @@ d = get_d(e,phi)
 # d = 1/e
 print("d: ", d)
 
-m = 18
-c = m^e%n
+m = 42
+c = m**e%n
 
 
 print(f'Original message: {m}')
 print(f'Ecrypted message: {c}')
-print(f'Decrypted message: {c^d%n}')
+print(f'Decrypted message: {c**d%n}')
 
